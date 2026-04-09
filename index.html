@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yadumithra UN — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@300;400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0d0d0f;
+  --surface:#141416;
+  --surface2:#1c1c1f;
+  --surface3:#242428;
+  --border:#2a2a2e;
+  --border2:#333338;
+  --text:#e8e8ec;
+  --text2:#9898a8;
+  --text3:#5a5a6a;
+  --accent:#c8f060;
+  --accent2:#60c8f0;
+  --accent3:#f060c8;
+  --red:#e05050;
+  --yellow:#f0c840;
+  --green:#50d080;
+  --titlebar-h:32px;
+  --radius:12px;
+  --shadow:0 24px 80px rgba(0,0,0,0.8), 0 4px 16px rgba(0,0,0,0.4);
+}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Syne',sans-serif;background:var(--bg);user-select:none;color:var(--text);}
+#desktop{width:100vw;height:100vh;position:relative;overflow:hidden;background-image: url('cat.jpg');background-size: cover;}
+#desktop::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 70% 30%,rgba(200,240,96,0.04) 0%,transparent 60%),radial-gradient(ellipse 40% 60% at 20% 70%,rgba(96,200,240,0.04) 0%,transparent 60%),radial-gradient(ellipse 50% 40% at 50% 50%,rgba(240,96,200,0.025) 0%,transparent 60%);pointer-events:none;z-index:0;}
+.grid-lines{position:absolute;inset:0;pointer-events:none;z-index:0;background-image:linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);background-size:48px 48px;}
+.icon-grid{position:absolute;top:20px;left:20px;display:flex;flex-direction:column;gap:8px;z-index:50;}
+.icon{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;width:72px;padding:8px 4px;border-radius:10px;transition:background 0.15s;}
+.icon:hover{background:rgba(255,255,255,0.07);}
+.icon.selected{background:rgba(200,240,96,0.12);outline:1.5px solid rgba(200,240,96,0.3);outline-offset:0;}
+.icon-img{width:48px;height:48px;display:flex;align-items:center;justify-content:center;background:var(--surface2);border:1px solid var(--border2);border-radius:12px;font-size:22px;box-shadow:0 4px 12px rgba(0,0,0,0.4);}
+.icon-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text2);text-align:center;line-height:1.3;word-break:break-all;}
+.win{position:absolute;border-radius:var(--radius);background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);display:none;flex-direction:column;z-index:100;overflow:hidden;animation:winOpen 0.22s cubic-bezier(0.34,1.56,0.64,1);}
+@keyframes winOpen{from{opacity:0;transform:scale(0.92) translateY(8px);}to{opacity:1;transform:scale(1) translateY(0);}}
+.win.open{display:flex;}
+.titlebar{height:var(--titlebar-h);background:rgba(255,255,255,0.04);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:10px;cursor:move;flex-shrink:0;}
+.win-dots{display:flex;gap:6px;flex-shrink:0;}
+.dot{width:12px;height:12px;border-radius:50%;cursor:pointer;transition:filter 0.15s;}
+.dot:hover{filter:brightness(1.3);}
+.dot-close{background:var(--red);}
+.dot-min{background:var(--yellow);}
+.dot-max{background:var(--green);}
+.win-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);font-weight:400;flex:1;text-align:center;pointer-events:none;}
+.winbody{overflow-y:auto;flex:1;scrollbar-width:thin;scrollbar-color:var(--border2) transparent;background:var(--surface);}
+.winbody::-webkit-scrollbar{width:6px;}
+.winbody::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px;}
+.win-scroll{overflow-y:auto;max-height:calc(85vh - 32px);}
+.about-hero{padding:28px 22px 20px;background:linear-gradient(135deg,rgba(200,240,96,0.06) 0%,transparent 60%);border-bottom:1px solid var(--border);}
+.about-name{font-family:'Instrument Serif',serif;font-size:38px;line-height:1.1;color:var(--text);margin-bottom:6px;}
+.about-name em{color:var(--accent);font-style:italic;}
+.about-title{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text3);letter-spacing:0.06em;margin-bottom:16px;}
+.badge-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:4px;background:var(--surface3);border:1px solid var(--border2);color:var(--text2);}
+.badge.accent{background:rgba(200,240,96,0.1);border-color:rgba(200,240,96,0.25);color:var(--accent);}
+.about-para{font-size:13.5px;line-height:1.8;color:var(--text2);padding:20px 22px;border-bottom:1px solid var(--border);}
+.about-para strong{color:var(--text);font-weight:600;}
+.resume-btn{margin:18px 22px;padding:10px 22px;background:var(--accent);color:#0d0d0f;border:none;border-radius:6px;cursor:pointer;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;transition:all 0.15s;display:inline-block;}
+.resume-btn:hover{background:#d4f46e;transform:translateY(-1px);}
+.skill-section{padding:18px 22px;border-bottom:1px solid var(--border);}
+.skill-section:last-child{border-bottom:none;}
+.skill-head{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;}
+.tag{font-family:'IBM Plex Mono',monospace;font-size:11px;padding:5px 11px;border-radius:6px;border:1px solid var(--border2);color:var(--text2);background:var(--surface2);transition:all 0.12s;cursor:default;}
+.tag:hover{background:var(--surface3);}
+.tag.t-accent{border-color:rgba(200,240,96,0.2);color:var(--accent);background:rgba(200,240,96,0.06);}
+.tag.t-blue{border-color:rgba(96,200,240,0.2);color:var(--accent2);background:rgba(96,200,240,0.06);}
+.tag.t-pink{border-color:rgba(240,96,200,0.2);color:var(--accent3);background:rgba(240,96,200,0.06);}
+.proj-card{padding:18px 22px;border-bottom:1px solid var(--border);transition:background 0.15s;cursor:default;position:relative;overflow:hidden;}
+.proj-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--border2);transition:background 0.15s;}
+.proj-card:hover{background:rgba(255,255,255,0.025);}
+.proj-card.c1::before{background:var(--accent);}
+.proj-card.c2::before{background:var(--accent2);}
+.proj-card.c3::before{background:var(--accent3);}
+.proj-card:last-child{border-bottom:none;}
+.proj-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:8px;gap:10px;}
+.proj-title{font-size:14px;font-weight:600;color:var(--text);}
+.proj-lbl{font-family:'IBM Plex Mono',monospace;font-size:9px;padding:3px 8px;border-radius:3px;background:var(--surface3);border:1px solid var(--border2);color:var(--text3);flex-shrink:0;}
+.proj-lbl.live{background:rgba(80,208,128,0.1);border-color:rgba(80,208,128,0.25);color:var(--green);}
+.proj-desc{font-size:12.5px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
+.proj-tags{display:flex;flex-wrap:wrap;gap:5px;}
+.ptag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--surface3);color:var(--text3);border:1px solid var(--border);}
+.timeline-item{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;gap:16px;}
+.timeline-item:last-child{border-bottom:none;}
+.tl-icon{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.tl-body{flex:1;}
+.tl-title{font-size:13.5px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.tl-sub{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:6px;}
+.tl-desc{font-size:12px;color:var(--text2);line-height:1.7;}
+.edu-card{margin:16px 22px;padding:18px;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;}
+.edu-school{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:6px;}
+.edu-degree{font-size:14px;font-weight:600;color:var(--text);margin-bottom:8px;}
+.edu-meta{display:flex;gap:10px;flex-wrap:wrap;}
+.edu-chip{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:4px 10px;border-radius:4px;background:var(--surface3);border:1px solid var(--border);color:var(--text2);}
+.edu-chip.hl{background:rgba(200,240,96,0.1);border-color:rgba(200,240,96,0.25);color:var(--accent);}
+.edu-note{margin:0 22px 20px;padding:16px;background:rgba(96,200,240,0.05);border:1px solid rgba(96,200,240,0.15);border-radius:8px;font-size:12.5px;color:var(--text2);line-height:1.7;}
+.contact-list{padding:16px 22px;display:flex;flex-direction:column;gap:8px;}
+.ci-item{display:flex;align-items:center;gap:14px;padding:12px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;text-decoration:none;color:var(--text2);transition:all 0.15s;}
+.ci-item:hover{background:var(--surface3);border-color:var(--border2);transform:translateX(3px);}
+.ci-icon{width:32px;height:32px;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;color:var(--text2);flex-shrink:0;}
+.ci-meta{flex:1;}
+.ci-label{font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;display:block;margin-bottom:2px;}
+.ci-val{font-size:13px;color:var(--text);}
+.ci-arr{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);}
+.hire-box{margin:0 22px 22px;padding:16px;background:rgba(200,240,96,0.05);border:1px solid rgba(200,240,96,0.2);border-radius:8px;}
+.hire-box p{font-size:12.5px;color:var(--text2);line-height:1.7;}
+.hire-box strong{color:var(--accent);}
+.ach-item{padding:16px 22px;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;}
+.ach-item:last-child{border-bottom:none;}
+.ach-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+.ach-dot.b{background:var(--accent2);}
+.ach-dot.p{background:var(--accent3);}
+.ach-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.ach-year{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);}
+.ach-desc{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.6;}
+.blog-post{padding:18px 22px;border-bottom:1px solid var(--border);}
+.blog-post:last-child{border-bottom:none;}
+.blog-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;}
+.blog-date{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);margin-bottom:8px;}
+.blog-excerpt{font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px;}
+.blog-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;}
+.btag{font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 8px;border-radius:4px;background:var(--surface3);color:var(--text3);border:1px solid var(--border);}
+.blog-link{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--accent);text-decoration:none;}
+.blog-link:hover{text-decoration:underline;}
+#taskbar{position:fixed;bottom:0;left:0;right:0;height:52px;z-index:9999;background:rgba(20,20,22,0.92);backdrop-filter:blur(20px) saturate(1.5);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 16px;gap:4px;}
+.tb-spacer{flex:1;}
+.tb-divider{width:1px;height:28px;background:var(--border);margin:0 8px;}
+.tb-clock{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);display:flex;flex-direction:column;align-items:flex-end;gap:1px;}
+.tb-time{font-size:13px;color:var(--text2);}
+.tb-date{font-size:10px;}
+.tb-btn-wrap{display:flex;align-items:center;gap:2px;}
+.tb-win-btn{padding:5px 12px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text3);background:transparent;border:1px solid transparent;cursor:pointer;transition:all 0.12s;white-space:nowrap;}
+.tb-win-btn:hover{background:var(--surface2);border-color:var(--border);color:var(--text2);}
+.tb-win-btn.active{background:var(--surface3);border-color:var(--border2);color:var(--text);}
+.tb-start{width:36px;height:36px;border-radius:8px;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:all 0.12s;flex-shrink:0;}
+.tb-start:hover{background:var(--surface3);}
+#ctx{position:fixed;background:var(--surface2);border:1px solid var(--border2);border-radius:10px;box-shadow:0 16px 40px rgba(0,0,0,0.6);display:none;z-index:99998;padding:6px;min-width:180px;}
+#ctx.show{display:block;}
+.cx{padding:7px 14px;border-radius:6px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text2);transition:all 0.1s;display:flex;align-items:center;gap:10px;}
+.cx:hover{background:var(--surface3);color:var(--text);}
+.cx-sep{height:1px;background:var(--border);margin:4px 0;}
+.cx-icon{font-size:12px;width:16px;text-align:center;}
+#loader{position:fixed;inset:0;background:var(--bg);z-index:999999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity 0.6s ease;}
+#loader.gone{opacity:0;pointer-events:none;}
+.ld-name{font-family:'Instrument Serif',serif;font-size:48px;color:var(--text);letter-spacing:-0.02em;}
+.ld-name span{color:var(--accent);}
+.ld-mono{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--text3);letter-spacing:0.06em;}
+.ld-bar-wrap{width:220px;height:2px;background:var(--surface3);border-radius:1px;overflow:hidden;}
+.ld-bar{height:100%;background:var(--accent);width:0%;transition:width 0.08s linear;border-radius:1px;}
+.egg-modal{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:999998;}
+.egg-modal.show{display:flex;}
+.egg-content{background:var(--surface);border:1px solid var(--border2);border-radius:14px;padding:32px;text-align:center;max-width:360px;}
+.egg-content h2{font-family:'Instrument Serif',serif;font-size:28px;color:var(--accent);margin-bottom:10px;}
+.egg-content p{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:18px;}
+.egg-close-btn{padding:8px 22px;background:var(--surface3);border:1px solid var(--border2);border-radius:6px;color:var(--text2);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;}
+.resize-handle{position:absolute;bottom:0;right:0;width:14px;height:14px;cursor:se-resize;background:transparent;z-index:200;}
+.resize-handle::after{content:'';position:absolute;bottom:4px;right:4px;width:6px;height:6px;border-right:2px solid var(--border2);border-bottom:2px solid var(--border2);}
+</style>
+</head>
+<body>
+<div id="loader">
+  <div class="ld-name">Yadumithra <span>UN</span></div>
+  <div class="ld-mono" id="ld-msg">initializing...</div>
+  <div class="ld-bar-wrap"><div class="ld-bar" id="lbar"></div></div>
+</div>
+
+<div id="desktop">
+  <div class="grid-lines"></div>
+
+  <div class="icon-grid">
+    <div class="icon" id="ico-about" ondblclick="openWin('win-about')" onclick="selectIcon('ico-about')">
+      <div class="icon-img">✦</div><div class="icon-label">about_me</div>
+    </div>
+    <div class="icon" id="ico-skills" ondblclick="openWin('win-skills')" onclick="selectIcon('ico-skills')">
+      <div class="icon-img">⌬</div><div class="icon-label">skills</div>
+    </div>
+    <div class="icon" id="ico-projects" ondblclick="openWin('win-projects')" onclick="selectIcon('ico-projects')">
+      <div class="icon-img">◈</div><div class="icon-label">projects</div>
+    </div>
+    <div class="icon" id="ico-exp" ondblclick="openWin('win-exp')" onclick="selectIcon('ico-exp')">
+      <div class="icon-img">◉</div><div class="icon-label">experience</div>
+    </div>
+    <div class="icon" id="ico-lead" ondblclick="openWin('win-lead')" onclick="selectIcon('ico-lead')">
+      <div class="icon-img">⬡</div><div class="icon-label">leadership</div>
+    </div>
+    <div class="icon" id="ico-edu" ondblclick="openWin('win-edu')" onclick="selectIcon('ico-edu')">
+      <div class="icon-img">◎</div><div class="icon-label">education</div>
+    </div>
+    <div class="icon" id="ico-cert" ondblclick="openWin('win-cert')" onclick="selectIcon('ico-cert')">
+      <div class="icon-img">✧</div><div class="icon-label">awards</div>
+    </div>
+    <div class="icon" id="ico-blog" ondblclick="openWin('win-blog')" onclick="selectIcon('ico-blog')">
+      <div class="icon-img">⬭</div><div class="icon-label">blog</div>
+    </div>
+    <div class="icon" id="ico-contact" ondblclick="openWin('win-contact')" onclick="selectIcon('ico-contact')">
+      <div class="icon-img">◍</div><div class="icon-label">contact</div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="win" id="win-about" style="width:440px;top:55px;left:115px;">
+    <div class="titlebar" data-win="win-about">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-about')"></div><div class="dot dot-min" onclick="minWin('win-about')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">about_me.txt</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="about-hero">
+        <div class="about-name">Yadumithra <em>U N</em></div>
+        <div class="about-title">CS UNDERGRAD · BUILDER · TECHNOLOGIST</div>
+        <div class="badge-row">
+          <span class="badge accent">computer vision</span><span class="badge accent">machine learning</span>
+          <span class="badge">full-stack</span><span class="badge">co-founder</span><span class="badge">iedc lead</span>
+        </div>
+      </div>
+      <p class="about-para">
+        hey! i'm <strong>yadumithra</strong>, a Computer Science undergrad from <strong>Kerala</strong>.<br><br>
+        I build things that <strong>actually help people</strong> — real-time waste littering detection for smart cities, OCR for messy doctor handwriting. I built <strong>kasaroam.in</strong>, a live platform for tourists visiting Kasaragod.<br><br>
+        When I'm not coding, I'm organizing <strong>summits</strong> and <strong>hackathons</strong>. Actively hunting for internships to do cool things with all of this.
+      </p>
+      <div style="padding:0 22px 22px;">
+        <button class="resume-btn" onclick="downloadResume()">↓ download resume</button>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="win" id="win-skills" style="width:380px;top:70px;left:140px;">
+    <div class="titlebar" data-win="win-skills">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-skills')"></div><div class="dot dot-min" onclick="minWin('win-skills')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">skills.json</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="skill-section">
+        <div class="skill-head">languages</div>
+        <div class="tags"><span class="tag t-accent">Python</span><span class="tag t-accent">Java</span><span class="tag t-accent">C</span><span class="tag t-accent">JavaScript</span></div>
+      </div>
+      <div class="skill-section">
+        <div class="skill-head">ai / computer vision</div>
+        <div class="tags"><span class="tag t-blue">YOLOv8</span><span class="tag t-blue">OpenCV</span><span class="tag t-blue">TensorFlow</span><span class="tag t-blue">PyTorch</span><span class="tag t-blue">Scikit-learn</span><span class="tag t-pink">Computer Vision</span><span class="tag t-pink">Machine Learning</span></div>
+      </div>
+      <div class="skill-section">
+        <div class="skill-head">web & infrastructure</div>
+        <div class="tags"><span class="tag">React</span><span class="tag">REST APIs</span><span class="tag">PostgreSQL</span><span class="tag">HTML/CSS</span><span class="tag">Docker</span><span class="tag">AWS</span></div>
+      </div>
+      <div class="skill-section">
+        <div class="skill-head">tools</div>
+        <div class="tags"><span class="tag">Git</span><span class="tag">Linux</span><span class="tag">Figma</span><span class="tag">VS Code</span></div>
+      </div>
+      <div class="skill-section" style="border-bottom:none;">
+        <div class="skill-head">soft skills</div>
+        <div class="tags"><span class="tag t-accent">Leadership</span><span class="tag">Public Speaking</span><span class="tag">Event Management</span><span class="tag">Entrepreneurship</span></div>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- PROJECTS -->
+  <div class="win" id="win-projects" style="width:470px;top:65px;left:130px;">
+    <div class="titlebar" data-win="win-projects">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-projects')"></div><div class="dot dot-min" onclick="minWin('win-projects')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">projects/ — 3 items</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="proj-card c1">
+        <div class="proj-header"><div class="proj-title">Waste Littering Detection System</div><span class="proj-lbl">Smart City Trivandrum</span></div>
+        <p class="proj-desc">Real-time CV pipeline detecting & geo-tagging public littering using YOLOv8 — integrated with city surveillance to auto-alert municipal authorities. Fine-tuned for varied urban lighting.</p>
+        <div class="proj-tags"><span class="ptag">YOLOv8</span><span class="ptag">OpenCV</span><span class="ptag">Computer Vision</span><span class="ptag">Edge Deployment</span><span class="ptag">Smart City</span></div>
+      </div>
+      <div class="proj-card c2">
+        <div class="proj-header"><div class="proj-title">Handwritten Prescription OCR</div><span class="proj-lbl">Academic</span></div>
+        <p class="proj-desc">OCR system digitizing messy doctor handwriting — custom preprocessing pipeline to handle abbreviations, low scan quality, and the genuine chaos of medical penmanship.</p>
+        <div class="proj-tags"><span class="ptag">Deep Learning</span><span class="ptag">OCR</span><span class="ptag">Image Processing</span><span class="ptag">Healthcare</span></div>
+      </div>
+      <div class="proj-card c3">
+        <div class="proj-header"><div class="proj-title">kasaroam.in</div><span class="proj-lbl live">★ Live</span></div>
+        <p class="proj-desc">Live web platform serving the Kasaragod region. Led full-stack dev, UI/UX, deployment, and cross-team coordination. Because doing one thing at a time is overrated.</p>
+        <div class="proj-tags"><span class="ptag">Full-Stack</span><span class="ptag">UI/UX</span><span class="ptag">Startup</span><span class="ptag">Deployment</span></div>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- EXPERIENCE -->
+  <div class="win" id="win-exp" style="width:420px;top:80px;left:150px;">
+    <div class="titlebar" data-win="win-exp">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-exp')"></div><div class="dot dot-min" onclick="minWin('win-exp')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">experience.md</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="timeline-item">
+        <div class="tl-icon">🚀</div>
+        <div class="tl-body"><div class="tl-title">Co-Founder — Kasaroam.in</div><div class="tl-sub">2023 — PRESENT</div><p class="tl-desc">Built live hyperlocal platform for Kasaragod. Led backend deployment, stakeholder management, and UI/UX implementation for MVP launch.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-icon">👁️</div>
+        <div class="tl-body"><div class="tl-title">Computer Vision — Waste Detection</div><div class="tl-sub">2024</div><p class="tl-desc">Real-time waste classification using YOLOv8 + OpenCV. Achieved 92% accuracy on custom dataset. Deployed on edge devices.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-icon">🌐</div>
+        <div class="tl-body"><div class="tl-title">Full-Stack Development</div><div class="tl-sub">2023 — PRESENT</div><p class="tl-desc">REST APIs, responsive web interfaces with React, authentication systems, database optimization. Stack: Python, JavaScript, PostgreSQL.</p></div>
+      </div>
+      <div class="timeline-item" style="background:rgba(200,240,96,0.03);border-bottom:none;">
+        <div class="tl-icon">📌</div>
+        <div class="tl-body"><div class="tl-title">Seeking: Internship Opportunity</div><div class="tl-sub">SUMMER 2025 →</div><p class="tl-desc">Looking for roles in AI/ML, Computer Vision, or Full-Stack Development to apply skills in real-world product development.</p></div>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- LEADERSHIP -->
+  <div class="win" id="win-lead" style="width:400px;top:90px;left:160px;">
+    <div class="titlebar" data-win="win-lead">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-lead')"></div><div class="dot dot-min" onclick="minWin('win-lead')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">leadership.log</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="timeline-item">
+        <div class="tl-icon">👑</div>
+        <div class="tl-body"><div class="tl-title">IEDC Student Lead (Campus)</div><div class="tl-sub">2024 — 2025</div><p class="tl-desc">Led campus innovation & entrepreneurship ecosystem. Mentored student startups, organized workshops and hackathons.</p></div>
+      </div>
+      <div class="timeline-item">
+        <div class="tl-icon">🎪</div>
+        <div class="tl-body"><div class="tl-title">IEDC Summit 2025 — Convenor</div><div class="tl-sub">2025</div><p class="tl-desc">Convened <strong style="color:var(--text)">Asia's largest summit</strong> for aspiring entrepreneurs. Speaker coordination, event planning, full logistics for a massive national-scale event.</p></div>
+      </div>
+      <div class="timeline-item" style="border-bottom:none;">
+        <div class="tl-icon">🎨</div>
+        <div class="tl-body"><div class="tl-title">IEDC Creative Lead</div><div class="tl-sub">2023 — 2024</div><p class="tl-desc">Directed branding, visual identity and creative campaigns for campus innovation events and competitions.</p></div>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="win" id="win-edu" style="width:380px;top:95px;left:165px;">
+    <div class="titlebar" data-win="win-edu">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-edu')"></div><div class="dot dot-min" onclick="minWin('win-edu')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">education.txt</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="edu-card" style="margin-top:18px;">
+        <div class="edu-school">LBS College of Engineering, Kasaragod</div>
+        <div class="edu-degree">B.Tech — Computer Science & Engineering</div>
+        <div class="edu-meta"><span class="edu-chip hl">CGPA 8.6 / 10</span><span class="edu-chip">2023 – Present</span><span class="edu-chip">6th Semester</span><span class="edu-chip">Kerala, India</span></div>
+      </div>
+      <div class="edu-note">Motivated undergrad with hands-on experience in CV, ML & full-stack dev. Actively seeking internship opportunities to apply and deepen technical expertise in real-world environments.</div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- AWARDS -->
+  <div class="win" id="win-cert" style="width:400px;top:100px;left:170px;">
+    <div class="titlebar" data-win="win-cert">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-cert')"></div><div class="dot dot-min" onclick="minWin('win-cert')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">awards_&_certs.log</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="ach-item"><div class="ach-dot"></div><div><div class="ach-title">Runner Up — RIBC National Hackathon</div><div class="ach-year">2024-2025</div><p class="ach-desc">Secured runner-up position in the RIBC National Hackathon competition.</p></div></div>
+      <div class="ach-item" style="border-bottom:none;"><div class="ach-dot b"></div><div><div class="ach-title">Recognition from Hon. Higher Education Minister</div><div class="ach-year">2024-2025</div><p class="ach-desc">Recognized by the Hon. Higher Education Minister of Kerala for Shuchitwaeye — a littering detection system built for Smart City Trivandrum.</p></div></div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- BLOG -->
+  <div class="win" id="win-blog" style="width:430px;top:85px;left:175px;">
+    <div class="titlebar" data-win="win-blog">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-blog')"></div><div class="dot dot-min" onclick="minWin('win-blog')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">blog/ — medium write-ups</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="blog-post">
+        <div class="blog-title">Hack, Snack and Attack</div>
+        <div class="blog-date">DEC 22, 2024</div>
+        <p class="blog-excerpt">Hacking explained beyond the movies. Understanding systems, vulnerabilities, Linux commands, networking, and the real world of cybersecurity. From VirtualBox VMs to ethical exploitation.</p>
+        <div class="blog-tags"><span class="btag">Cybersecurity</span><span class="btag">Hacking</span><span class="btag">Linux</span></div>
+        <a class="blog-link" href="https://medium.com/@yadumithra1/hack-snack-and-attack-ae32eb649ec6" target="_blank">→ Read on Medium</a>
+      </div>
+      <div class="blog-post">
+        <div class="blog-title">Are We Really Alone in This Universe?</div>
+        <div class="blog-date">OCT 17, 2024</div>
+        <p class="blog-excerpt">Exploring the cosmic perspective. With billions of galaxies and trillions of planets, the search for extraterrestrial life. Reflections on NASA discoveries, dark matter, and humanity's place in an expanding universe.</p>
+        <div class="blog-tags"><span class="btag">Science</span><span class="btag">Space</span><span class="btag">Astronomy</span></div>
+        <a class="blog-link" href="https://medium.com/@yadumithra1/are-we-really-alone-in-this-universe-8c3596b25b9e" target="_blank">→ Read on Medium</a>
+      </div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="win" id="win-contact" style="width:380px;top:110px;left:180px;">
+    <div class="titlebar" data-win="win-contact">
+      <div class="win-dots"><div class="dot dot-close" onclick="closeWin('win-contact')"></div><div class="dot dot-min" onclick="minWin('win-contact')"></div><div class="dot dot-max"></div></div>
+      <div class="win-title">contact.txt</div>
+    </div>
+    <div class="winbody win-scroll">
+      <div class="contact-list">
+        <a class="ci-item" href="https://linkedin.com/in/yadumithra-u-n" target="_blank">
+          <div class="ci-icon">in</div><div class="ci-meta"><span class="ci-label">LinkedIn</span><span class="ci-val">linkedin.com/in/yadumithra-u-n</span></div><span class="ci-arr">↗</span>
+        </a>
+        <a class="ci-item" href="https://github.com/yadumithra" target="_blank">
+          <div class="ci-icon">gh</div><div class="ci-meta"><span class="ci-label">GitHub</span><span class="ci-val">github.com/yadumithra</span></div><span class="ci-arr">↗</span>
+        </a>
+        <a class="ci-item" href="https://kasaroam.in" target="_blank">
+          <div class="ci-icon">🌍</div><div class="ci-meta"><span class="ci-label">Startup</span><span class="ci-val">kasaroam.in</span></div><span class="ci-arr">↗</span>
+        </a>
+        <div class="ci-item" style="cursor:default;">
+          <div class="ci-icon">📍</div><div class="ci-meta"><span class="ci-label">Location</span><span class="ci-val">Kasaragod, Kerala, India</span></div>
+        </div>
+      </div>
+      <div class="hire-box"><p><strong>Open to internships</strong> in AI/ML, Computer Vision, or Full-Stack dev.<br>Let's build something cool together — drop a message!</p></div>
+    </div>
+    <div class="resize-handle"></div>
+  </div>
+
+  <!-- RIGHT CLICK MENU -->
+  <div id="ctx">
+    <div class="cx" onclick="openAll()"><span class="cx-icon">⊞</span>open all windows</div>
+    <div class="cx" onclick="closeAll()"><span class="cx-icon">⊟</span>close all windows</div>
+    <div class="cx-sep"></div>
+    <div class="cx" onclick="openWin('win-about')"><span class="cx-icon">✦</span>about yadumithra</div>
+    <div class="cx" onclick="openWin('win-contact')"><span class="cx-icon">◍</span>get in touch</div>
+    <div class="cx-sep"></div>
+    <div class="cx" onclick="downloadResume()"><span class="cx-icon">↓</span>download resume</div>
+  </div>
+
+  <!-- EASTER EGG -->
+  <div class="egg-modal" id="egg-modal">
+    <div class="egg-content">
+      <h2>you found it ✦</h2>
+      <p>↑↑↓↓←→←→BA — the konami code.<br>yadu appreciates people who read the docs.</p>
+      <button class="egg-close-btn" onclick="document.getElementById('egg-modal').classList.remove('show')">close</button>
+    </div>
+  </div>
+</div>
+
+<!-- TASKBAR -->
+<div id="taskbar">
+  <div class="tb-start" onclick="openWin('win-about')" title="Home">✦</div>
+  <div class="tb-divider"></div>
+  <div class="tb-btn-wrap" id="tb-btn-wrap"></div>
+  <div class="tb-spacer"></div>
+  <div class="tb-clock">
+    <span class="tb-time" id="clock">00:00</span>
+    <span class="tb-date" id="tb-date"></span>
+  </div>
+</div>
+
+<script>
+const WINS={
+  'win-about':'about_me','win-skills':'skills','win-projects':'projects',
+  'win-exp':'experience','win-lead':'leadership','win-edu':'education',
+  'win-cert':'awards','win-blog':'blog','win-contact':'contact'
+};
+let zTop=200;
+const g=id=>document.getElementById(id);
+
+function bringFront(w){zTop++;w.style.zIndex=zTop;}
+function openWin(id){const w=g(id);if(!w)return;w.classList.add('open');w.classList.remove('minimized');bringFront(w);updateTaskbar();hideCtx();}
+function closeWin(id){
+  const w=g(id);if(!w)return;
+  w.style.transition='opacity 0.15s,transform 0.15s';w.style.opacity='0';w.style.transform='scale(0.95)';
+  setTimeout(()=>{w.classList.remove('open');w.style.opacity='';w.style.transform='';w.style.transition='';updateTaskbar();},150);
+}
+function minWin(id){const w=g(id);if(!w)return;w.classList.add('minimized');w.classList.remove('open');updateTaskbar();}
+function closeAll(){Object.keys(WINS).forEach(id=>closeWin(id));hideCtx();}
+function openAll(){Object.keys(WINS).forEach((id,i)=>setTimeout(()=>openWin(id),i*60));hideCtx();}
+function selectIcon(id){document.querySelectorAll('.icon').forEach(i=>i.classList.remove('selected'));g(id)?.classList.add('selected');}
+
+function updateTaskbar(){
+  const wrap=g('tb-btn-wrap');wrap.innerHTML='';
+  Object.entries(WINS).forEach(([id,label])=>{
+    const w=g(id);if(!w)return;
+    if(w.classList.contains('open')||w.classList.contains('minimized')){
+      const btn=document.createElement('button');
+      btn.className='tb-win-btn'+(w.classList.contains('open')?' active':'');
+      btn.textContent=label;
+      btn.onclick=()=>w.classList.contains('minimized')?openWin(id):minWin(id);
+      wrap.appendChild(btn);
+    }
+  });
+}
+
+g('desktop').addEventListener('click',e=>{
+  if(!e.target.closest('.icon')&&!e.target.closest('.win')&&!e.target.closest('#taskbar')&&!e.target.closest('#ctx'))
+    document.querySelectorAll('.icon').forEach(i=>i.classList.remove('selected'));
+});
+
+// DRAG
+document.querySelectorAll('.titlebar').forEach(tb=>{
+  let drag=false,ox=0,oy=0;
+  tb.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('dot'))return;
+    drag=true;const w=tb.closest('.win');bringFront(w);
+    const r=w.getBoundingClientRect();ox=e.clientX-r.left;oy=e.clientY-r.top;e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!drag)return;const w=tb.closest('.win');
+    let nx=Math.max(0,Math.min(window.innerWidth-w.offsetWidth,e.clientX-ox));
+    let ny=Math.max(0,Math.min(window.innerHeight-60-w.offsetHeight,e.clientY-oy));
+    w.style.left=nx+'px';w.style.top=ny+'px';
+  });
+  document.addEventListener('mouseup',()=>{drag=false;});
+});
+
+// RESIZE
+document.querySelectorAll('.resize-handle').forEach(h=>{
+  let r=false,sx=0,sy=0,sw=0,sh=0;
+  h.addEventListener('mousedown',e=>{
+    r=true;const w=h.closest('.win');const rect=w.getBoundingClientRect();
+    sx=e.clientX;sy=e.clientY;sw=rect.width;sh=rect.height;e.preventDefault();e.stopPropagation();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!r)return;const w=h.closest('.win');
+    w.style.width=Math.max(280,sw+(e.clientX-sx))+'px';
+    const wb=w.querySelector('.win-scroll');
+    if(wb)wb.style.maxHeight=(Math.max(200,sh+(e.clientY-sy))-32)+'px';
+  });
+  document.addEventListener('mouseup',()=>{r=false;});
+});
+
+document.querySelectorAll('.win').forEach(w=>w.addEventListener('mousedown',()=>bringFront(w)));
+
+// RIGHT CLICK
+const ctx=g('ctx');
+g('desktop').addEventListener('contextmenu',e=>{
+  if(e.target.closest('.win')||e.target.closest('.icon'))return;
+  e.preventDefault();
+  ctx.style.left=Math.min(e.clientX,window.innerWidth-200)+'px';
+  ctx.style.top=Math.min(e.clientY,window.innerHeight-200)+'px';
+  ctx.classList.add('show');
+});
+document.addEventListener('click',hideCtx);
+function hideCtx(){ctx.classList.remove('show');}
+
+// CLOCK
+function tick(){
+  const n=new Date(),h=n.getHours(),m=n.getMinutes();
+  g('clock').textContent=(h<10?'0'+h:h)+':'+(m<10?'0'+m:m);
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  g('tb-date').textContent=days[n.getDay()]+' '+n.getDate()+' '+months[n.getMonth()];
+}
+tick();setInterval(tick,15000);
+
+// RESUME
+function downloadResume(){
+  const txt=`YADUMITHRA UN\nCS Undergrad | Tech Builder | AI/ML Enthusiast\n\nEDUCATION\nB.Tech CS Engineering — LBS College, Kasaragod — CGPA 8.6/10 (2023-Present)\n\nEXPERIENCE\nCo-Founder — Kasaroam.in (2023-Present)\nCV Project — Waste Detection 92% accuracy (2024)\nFull-Stack Development — Python, JS, PostgreSQL (2023-Present)\n\nPROJECTS\n• Waste Littering Detection System (YOLOv8, OpenCV)\n• Handwritten Prescription OCR (Deep Learning)\n• kasaroam.in — Live platform for Kasaragod\n\nSKILLS\nLanguages: Python, Java, C, JavaScript\nAI/ML: YOLOv8, TensorFlow, PyTorch, OpenCV, Scikit-learn\nWeb: React, REST APIs, PostgreSQL, HTML/CSS\nTools: Git, Linux, Docker, AWS, Figma\n\nLEADERSHIP\nIEDC Student Lead (2024-2025)\nIEDC Summit 2025 Convenor — Asia's largest entrepreneurship summit\nIEDC Creative Lead (2023-2024)\n\nACHIEVEMENTS\n• AI/ML Innovation Hackathon — 1st Place (2024)\n• AWS Cloud Quest Graduate (2024)\n• Speaker — Tech Summit 2024\n• Python for Data Science — IBM/Coursera (2023)\n\nCONTACT\nLinkedIn: linkedin.com/in/yadumithra-u-n\nGitHub: github.com/yadumithra\nStartup: kasaroam.in`;
+  const blob=new Blob([txt],{type:'text/plain'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='Yadumithra_UN_Resume.txt';a.click();URL.revokeObjectURL(url);
+}
+
+// KONAMI
+const kCode=['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let kIdx=0;
+document.addEventListener('keydown',e=>{
+  if(e.key===kCode[kIdx]){kIdx++;if(kIdx===kCode.length){g('egg-modal').classList.add('show');kIdx=0;}}else{kIdx=0;}
+  if(e.key==='Escape'){g('egg-modal').classList.remove('show');hideCtx();}
+});
+
+// BOOT
+const steps=['loading kernel...','mounting assets...','rendering ui...','almost there...','done ✦'];
+let pc=0;const bar=g('lbar'),ldMsg=g('ld-msg');
+function advance(){
+  const vals=[0,20,45,75,95,100];if(pc<vals.length-1)pc++;
+  bar.style.width=vals[pc]+'%';if(ldMsg&&steps[pc-1])ldMsg.textContent=steps[pc-1];
+  if(vals[pc]<100)setTimeout(advance,250+Math.random()*300);
+  else setTimeout(()=>g('loader').classList.add('gone'),500);
+}
+window.addEventListener('load',()=>setTimeout(advance,300));
+setTimeout(advance,150);
+</script>
+</body>
+</html>
