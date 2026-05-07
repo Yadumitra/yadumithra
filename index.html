@@ -556,24 +556,22 @@ function downloadResume(){
     .then(r=>r.text())
     .then(base64=>{
       if(!base64||base64.length<100){
-        console.error('PDF data not found. Run: node encode-resume.js');
-        alert('Resume PDF not available. Please save resume.pdf in the folder.');
+        console.error('PDF data not found.');
+        alert('Resume PDF not available.');
         return;
       }
-      const binary=atob(base64);
-      const bytes=new Uint8Array(binary.length);
-      for(let i=0;i<binary.length;i++){bytes[i]=binary.charCodeAt(i);}
-      const blob=new Blob([bytes],{type:'application/pdf'});
-      const url=URL.createObjectURL(blob);
-      const a=document.createElement('a');
-      a.href=url;
-      a.download='Yadumithra_UN_Resume.pdf';
-      a.click();
-      URL.revokeObjectURL(url);
+      // Use data URL for more reliable PDF download
+      const dataUrl='data:application/pdf;base64,'+base64;
+      const link=document.createElement('a');
+      link.href=dataUrl;
+      link.download='Yadumithra_UN_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     })
     .catch(e=>{
       console.error('Error downloading resume:',e);
-      alert('Unable to download resume. Ensure pdf_base64.txt is populated.');
+      alert('Unable to download resume.');
     });
 }
 
