@@ -551,10 +551,30 @@ tick();setInterval(tick,15000);
 
 // RESUME
 function downloadResume(){
-  const txt=`YADUMITHRA UN\nCS Undergrad | Tech Builder | AI/ML Enthusiast\n\nEDUCATION\nB.Tech CS Engineering — LBS College, Kasaragod — CGPA 8.6/10 (2023-Present)\n\nEXPERIENCE\nCo-Founder — Kasaroam.in (2023-Present)\nCV Project — Waste Detection 92% accuracy (2024)\nFull-Stack Development — Python, JS, PostgreSQL (2023-Present)\n\nPROJECTS\n• Waste Littering Detection System (YOLOv8, OpenCV)\n• Handwritten Prescription OCR (Deep Learning)\n• kasaroam.in — Live platform for Kasaragod\n\nSKILLS\nLanguages: Python, Java, C, JavaScript\nAI/ML: YOLOv8, TensorFlow, PyTorch, OpenCV, Scikit-learn\nWeb: React, REST APIs, PostgreSQL, HTML/CSS\nTools: Git, Linux, Docker, AWS, Figma\n\nLEADERSHIP\nIEDC Student Lead (2024-2025)\nIEDC Summit 2025 Convenor — Asia's largest entrepreneurship summit\nIEDC Creative Lead (2023-2024)\n\nACHIEVEMENTS\n• AI/ML Innovation Hackathon — 1st Place (2024)\n• AWS Cloud Quest Graduate (2024)\n• Speaker — Tech Summit 2024\n• Python for Data Science — IBM/Coursera (2023)\n\nCONTACT\nLinkedIn: linkedin.com/in/yadumithra-u-n\nGitHub: github.com/yadumithra\nStartup: kasaroam.in`;
-  const blob=new Blob([txt],{type:'text/plain'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='Yadumithra_UN_Resume.txt';a.click();URL.revokeObjectURL(url);
+  // Fetch base64 PDF from pdf_base64.txt
+  fetch('pdf_base64.txt')
+    .then(r=>r.text())
+    .then(base64=>{
+      if(!base64||base64.length<100){
+        console.error('PDF data not found. Run: node encode-resume.js');
+        alert('Resume PDF not available. Please save resume.pdf in the folder.');
+        return;
+      }
+      const binary=atob(base64);
+      const bytes=new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++){bytes[i]=binary.charCodeAt(i);}
+      const blob=new Blob([bytes],{type:'application/pdf'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');
+      a.href=url;
+      a.download='Yadumithra_UN_Resume.pdf';
+      a.click();
+      URL.revokeObjectURL(url);
+    })
+    .catch(e=>{
+      console.error('Error downloading resume:',e);
+      alert('Unable to download resume. Ensure pdf_base64.txt is populated.');
+    });
 }
 
 // KONAMI
